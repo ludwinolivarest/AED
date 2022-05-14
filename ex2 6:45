@@ -1,0 +1,130 @@
+//El siguiente código corresponde a una lista enlazada simple y ordenada link.En el main de este programa se definen dos listas("la" y "lb") y se les inserta elementos.Se pide implementar la función Merge para unir estas dos listas de forma ordenada.Esta unión debe ser hecha sobre la lista "la", moviendo los nodos de la lista "la" y "lb", como corresponda.No se debe utilizar alguna lista o estructura adicional para hacer esta unión.Al final la lista "la" debe contener a las dos listas y la lista "lb", debe terminar vacía.
+
+//Adicionalmente se debe realizar el método Reverse, para invertir la lista enlazada, sin usar estructuras adicionales.
+
+#include <iostream>
+
+template<class T>
+struct CLess
+{   bool operator()(T a, T b)
+    { return a < b; }
+};
+
+template<class T>
+struct CGreater
+{   bool operator()(T a, T b)
+    { return a > b; }
+};
+
+template <class T>
+struct CNode
+{
+    CNode(T x)
+    {   value = x;  next = 0;   }
+    T value;
+    CNode<T>* next;
+};
+
+template <class T, class C>
+class CXList
+{
+public:
+    CXList();
+    ~CXList();
+    bool Find(T x, CNode<T>**& p);
+    bool Ins(T x);
+    bool Rem(T x);
+    void Print();
+
+    CNode<T>* head;
+    C cmp;
+};
+
+template <class T, class C>
+CXList<T,C>::CXList()
+{
+    head = 0;
+}
+
+template <class T, class C>
+CXList<T,C>::~CXList()
+{
+    for ( CNode<T>* t = head; t != 0;  )
+    {
+        head = head->next;
+        delete t;
+        t = head;
+    }
+}
+
+template <class T, class C>
+bool CXList<T,C>::Find(T x, CNode<T>**& p)
+{
+    for (p = &head;
+         *p && cmp((*p)->value,x);
+         p = &((*p)->next) );
+    return *p && (*p)->value == x;
+}
+
+template <class T, class C>
+bool CXList<T,C>::Ins(T x)
+{
+    CNode<T>** p;
+    if ( Find(x,p) ) return 0;
+    CNode<T>* n = new CNode<T>(x);
+    n->next = *p;
+    *p = n;
+    return 1;
+}
+
+template <class T, class C>
+bool CXList<T,C>::Rem(T x)
+{
+    CNode<T>** p;
+    if ( !Find(x,p) ) return 0;
+    CNode<T>* t = *p;
+    *p = t->next;
+    delete t;
+    return 1;
+}
+
+template <class T, class C>
+void CXList<T,C>::Print()
+{
+    for ( CNode<T>* t = head; t != 0; t = t->next )
+        std::cout<<t->value<<" ";
+    std::cout<<"\n";
+}
+
+template<class T>
+void Merge(CXList<int, CLess<int>>& la,
+           CXList<int, CLess<int>>& lb)
+{
+    
+}
+
+template<class T>
+void Merge(CXList<int, CLess<int>>& la)
+{
+    
+}
+
+int main()
+{
+    CXList<int, CLess<int>> la;
+    la.Ins(9);   la.Ins(11);  la.Ins(15);
+    la.Ins(3);   la.Ins(7);   la.Ins(1);
+    la.Ins(18);
+    la.Print();
+    
+    CXList<int, CLess<int>> lb;
+    lb.Ins(8);   lb.Ins(13);  lb.Ins(17);
+    lb.Ins(4);   lb.Ins(6);   lb.Ins(2);
+    lb.Ins(10);  lb.Ins(14);
+    lb.Print();
+    std::cout<<"--------\n";
+    Merge<int>(la,lb);
+    la.Print();
+    Reverse<int>(la);
+    la.Print();
+}

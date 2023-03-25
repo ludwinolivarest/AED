@@ -1,0 +1,33 @@
+#include <iostream>
+using namespace std;
+void merge(int *p,int *q){
+  int tam=q-p;
+   while(p<q){ 
+      if(*q<*p){
+      int tmp=*q;  
+      for(int* r=q;r>p;r--){
+        *r= *(r-1);
+      }  
+      *p=*q; 
+      *p=tmp;
+        p++;
+        q++;
+        
+  } else{
+        p++;
+  } 
+     
+     
+   }       
+}
+
+
+
+int main() {
+int A[8]={2,12,18,22,1,3,11,19};
+  merge(A,A+4);
+  for(int x=0;x<8;x++){
+    cout<<A[x]<<endl;
+  }
+  
+}

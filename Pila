@@ -1,4 +1,4 @@
-include <iostream>
+#include <iostream>
 using namespace std;
 class PilaMyClass
 {
@@ -30,6 +30,7 @@ public:
 		}
 		return tmp;
 	}
+	
 
 private:
 	int A[9];
@@ -37,25 +38,63 @@ private:
 
 };
 
+class Pilita
+{
+public:
+	void ins(int x) {
+		if (!top) {
+			top = A;
+			*top = x;
+			tale = top;
+		}
+		else {
+			if(tale>top){
+			if (tale < F) {
+				tale++;
+				*tale = x;
+			}
+			else {
+				if(tale!=top){
+					*tale = x;
+				}
+				else
+				{
+					cout << "full" << endl;
+				}
+				
+			}
+			}
+
+			
+		}
+		
+
+	}
+
+void del(int x) {
+
+}
+void imprimir() {
+	for (int x = 0; x < 10; x++) {
+		cout << A[x];
+	}
+	cout << endl;
+}
+private:
+	int A[9];
+	int* F = A + 9, * top = NULL, * tale = NULL;
+};
 
 
 
 
 int main()
 {
-	PilaMyClass P;
-	P.push(2);
-	P.push(3);
-	P.push(4);
-	P.push(5);
-	P.push(6);
-	P.push(7);
-	P.push(8);
-	P.push(9);
-	P.push(10);
-	P.push(10);
-	P.push(10);
-	P.push(10);
-	P.push(10);
+	Pilita P;
+	for (int i = 1; i < 13; i++) {
+		P.ins(i);
+		P.imprimir();
+	}
 
 }
+

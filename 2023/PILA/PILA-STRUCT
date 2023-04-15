@@ -1,0 +1,23 @@
+#include <iostream>
+using namespace std;
+
+struct NODO {
+    int v;
+    NODO* n;
+};
+struct PILA {
+    NODO* Top = NULL;
+    void Push(int v);
+    int Pop();
+
+};
+struct COLA {
+    NODO* Head = NULL, * Tail = NULL;
+    void Push(int v);
+    int Pop();
+};
+
+int main()
+{
+    std::cout << "Hello World!\n";
+}

@@ -1,0 +1,146 @@
+#include <iostream>
+using namespace std;
+class PilaMyClass
+{
+public:
+	void push(int x) {
+		if (!top) {
+			top = A;
+			*top = x;
+		}
+		else {
+			if (top < f) {
+				top++;
+				*top = x;
+			}
+			else {
+				cout << "llena" << endl;
+			}
+		}
+
+	}
+	int pop() {
+		int tmp = 0;
+		if (top) {
+			tmp = *top;
+			top--;
+		}
+		else {
+			cout << "vacia" << endl;
+		}
+		return tmp;
+	}
+
+
+private:
+	int A[9];
+	int* I = A, * f = A + 9, * top = NULL;
+
+};
+
+class Pilita
+{
+public:
+	void ins(int x) {
+		if (!top) {
+			top = A;
+			*top = x;
+			tale = top;
+			tale++;
+		}
+		else {
+				if (tale <= F ) {
+					if (tale != top) {
+						*tale = x;
+						tale++;
+						
+							
+					}
+					else if(tale==top and top != NULL){
+						*tale = x;
+						tale++;
+					}
+					else {
+						cout << "full" << endl;
+					}
+				}
+				else {
+					if (*A != NULL) {
+						cout << "full" << endl;
+					}
+					else 
+					{
+						tale = A;
+						*tale = x;
+						tale++;
+					}
+					
+				}
+		}
+	}
+
+	void del() {
+		if (top<=F) {
+			if (top != tale) {
+				*top = NULL;
+				top++;
+			}
+			else {
+				cout << "Vacia" << endl;
+			}
+			
+		}
+		else {
+			if (*A) {
+				top = A;
+				*top = NULL;
+				top++;
+			}
+			else {
+				cout << "Vacia" << endl;
+			}
+			
+		}
+
+
+	}
+	void imprimir() {
+		for (int x = 0; x < 10; x++) {
+			cout << A[x];
+		}
+		cout << endl;
+	}
+private:
+	int A[9];
+	int* F = A + 9, * top = NULL, * tale = NULL;
+};
+
+
+
+
+int main()
+{
+	Pilita P;
+	for (int i = 1; i < 3; i++) {
+		P.ins(1);
+		
+	}
+
+	for (int i = 1; i < 3; i++) {
+		P.ins(2);
+		
+	}
+
+	P.del();
+	P.del();
+	P.del();
+	P.del();
+//	P.imprimir();
+	for (int i = 1; i < 9; i++) {
+		P.ins(1);
+	}
+	P.imprimir();
+	
+
+
+}

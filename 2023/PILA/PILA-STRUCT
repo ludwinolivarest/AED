@@ -2,22 +2,87 @@
 using namespace std;
 
 struct NODO {
-    int v;
+    int x;
     NODO* n;
 };
 struct PILA {
     NODO* Top = NULL;
-    void Push(int v);
-    int Pop();
+    void Push(int v) {
+        NODO* nd = new NODO;
+        nd->x = v;
+        nd->n = NULL;
+        if (Top == NULL) {
+            Top = nd;
+        }
+        else {
+            NODO* na = Top;
+            Top = nd;
+            Top->n = na;            
+        }
+    }
+   int Pop() {
+       NODO* tmp;
+       tmp = Top;
+       Top = Top->n;
+       return tmp->x;       
+    }
+    void Imprimir() {        
+        for (NODO *tmp = Top; tmp; tmp = tmp->n) {
+            cout << tmp->x;
+        }        
+    }
 
 };
 struct COLA {
-    NODO* Head = NULL, * Tail = NULL;
-    void Push(int v);
-    int Pop();
+    NODO* Head = NULL, *Tail = NULL;
+    void Push(int v) {
+        NODO* nd = new NODO;
+        nd->x = v;
+        nd->n = NULL;
+        if (!Head) {
+            Head = nd;
+            Tail = Head;
+        }
+        else {
+            Tail->n = nd;
+            Tail = Tail->n;
+        }
+
+    }
+
+    int Pop() {
+        NODO* tmp;
+        tmp = Head;
+        while (tmp->n != Tail) {
+            tmp = tmp->n;
+        }
+        Tail = tmp;        
+        return Tail->x;        
+
+    };
+    
+    void Imprimir() {
+        NODO* tmp;
+        tmp = Head;
+        while (tmp!=Tail) {
+            cout << tmp->x;
+            tmp = tmp->n;
+        }
+        cout << tmp->x;
+    }
+    
 };
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    COLA A;
+    A.Push(1);
+    A.Push(2);
+    A.Push(3);
+    A.Push(4);
+    A.Push(5);
+    A.Pop();
+    A.Pop();  
+    A.Imprimir();  
+    
 }

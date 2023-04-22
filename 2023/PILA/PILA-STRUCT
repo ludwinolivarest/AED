@@ -17,24 +17,30 @@ struct PILA {
         else {
             NODO* na = Top;
             Top = nd;
-            Top->n = na;            
+            Top->n = na;
+            
         }
     }
-   int Pop() {
-       NODO* tmp;
-       tmp = Top;
-       Top = Top->n;
-       return tmp->x;       
+    int Pop() {
+        int a = 0;
+        if (Top) {
+            NODO* tmp;
+            tmp = Top;
+            Top = Top->n;
+            a = tmp->x;
+            delete tmp;
+        }
+        return a;
     }
-    void Imprimir() {        
-        for (NODO *tmp = Top; tmp; tmp = tmp->n) {
+    void Imprimir() {
+        for (NODO* tmp = Top; tmp; tmp = tmp->n) {
             cout << tmp->x;
-        }        
+        }
     }
 
 };
 struct COLA {
-    NODO* Head = NULL, *Tail = NULL;
+    NODO* Head = NULL, * Tail = NULL;
     void Push(int v) {
         NODO* nd = new NODO;
         nd->x = v;
@@ -51,38 +57,40 @@ struct COLA {
     }
 
     int Pop() {
-        NODO* tmp;
-        tmp = Head;
-        while (tmp->n != Tail) {
-            tmp = tmp->n;
+        int a = 0;
+        if (Head) {
+            NODO* tmp;
+            tmp = Head;
+            Head = Head->n;
+            a = tmp->x;
+            delete tmp;
         }
-        Tail = tmp;        
-        return Tail->x;        
+        return a;
 
     };
-    
+
     void Imprimir() {
         NODO* tmp;
         tmp = Head;
-        while (tmp!=Tail) {
+        while (tmp != Tail) {
             cout << tmp->x;
             tmp = tmp->n;
         }
         cout << tmp->x;
-    }
-    
+    }0
+
 };
 
 int main()
 {
-    COLA A;
+    PILA A;
     A.Push(1);
     A.Push(2);
     A.Push(3);
     A.Push(4);
     A.Push(5);
     A.Pop();
-    A.Pop();  
-    A.Imprimir();  
-    
+    A.Pop();
+    A.Imprimir();
+
 }

@@ -1,0 +1,53 @@
+#include <iostream>
+using namespace std;
+
+struct Nodo {
+    int valor;
+    Nodo* next;
+    Nodo(int v, Nodo* n = NULL) {
+        valor = v;
+        next = n;
+    }
+    
+};
+struct Pila
+{
+    Nodo* Top=NULL;
+    void Push(int x) {
+        if (!Top)
+            Top = new Nodo(x);
+        else
+            Top = new Nodo(x, Top);
+    }
+    int Pop() {
+        int val=0;
+        if (Top) {
+            Nodo* d;
+            d = Top;
+            Top = Top->next;
+            val = d->valor;
+            delete d;
+        }
+        else {
+            cout << "Vacia";
+        }
+        
+        return val;
+    }
+};
+
+int main()
+{
+    Pila A;
+    A.Push(2);
+    A.Push(3);
+    A.Push(4);
+    A.Push(5);
+    A.Pop();
+    A.Pop();
+    A.Pop();
+    A.Pop();
+    A.Pop();
+    
+}
+

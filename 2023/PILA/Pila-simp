@@ -8,11 +8,10 @@ struct Nodo {
         valor = v;
         next = n;
     }
-    
 };
 struct Pila
 {
-    Nodo* Top=NULL;
+    Nodo* Top = NULL;
     void Push(int x) {
         if (!Top)
             Top = new Nodo(x);
@@ -20,19 +19,52 @@ struct Pila
             Top = new Nodo(x, Top);
     }
     int Pop() {
-        int val=0;
+        int val = 0;
         if (Top) {
             Nodo* d;
             d = Top;
             Top = Top->next;
             val = d->valor;
             delete d;
+            return val;
         }
         else {
-            cout << "Vacia";
-        }
+            cout << "Vacia"<<endl;
+        }        
+    }
+    void Imprimir() {
+        for (Nodo* I = Top; I; I = I->next)
+            cout << I->valor << "->";
+        cout << endl;
+    }
+};
+struct Cadena
+{
+    Nodo* Head = NULL, *Tail = NULL;
+    void Push(int x) {
+        if (!Head)
+            Head = new Nodo(x), Tail = Head;
+        else
+            Tail->next = new Nodo(x),Tail = Tail->next;            
+    }
+    int Pop() {
         
-        return val;
+        int a = 0;
+        if (Head) {
+            Nodo* tmp = Head;
+            a = tmp->valor;
+            Head = Head->next;
+            delete tmp;
+            return a;
+        }
+        else {
+            cout << "Vacia"<<endl;
+        }
+    }
+    void Imprimir() {
+        for (Nodo* I = Head; I; I = I->next)
+            cout << I->valor << "->";
+        cout << endl;
     }
 };
 
@@ -43,11 +75,14 @@ int main()
     A.Push(3);
     A.Push(4);
     A.Push(5);
+    A.Imprimir();
     A.Pop();
     A.Pop();
     A.Pop();
     A.Pop();
     A.Pop();
-    
+    A.Pop();
+    A.Pop();
+    A.Imprimir();   
 }
 

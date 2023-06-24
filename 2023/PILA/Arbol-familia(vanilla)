@@ -1,0 +1,56 @@
+#include <iostream>
+
+struct Nodo {
+    int dato;
+    Nodo* izquierda;
+    Nodo* derecha;
+};
+
+// Función para crear un nuevo nodo
+Nodo* crearNodo(int dato) {
+    Nodo* nodo = new Nodo();
+    nodo->dato = dato;
+    nodo->izquierda = nullptr;
+    nodo->derecha = nullptr;
+    return nodo;
+}
+
+// Función para insertar un elemento en el árbol
+Nodo* insertar(Nodo* raiz, int dato) {
+    if (raiz == nullptr) {
+        raiz = crearNodo(dato);
+    } else if (dato <= raiz->dato) {
+        raiz->izquierda = insertar(raiz->izquierda, dato);
+    } else {
+        raiz->derecha = insertar(raiz->derecha, dato);
+    }
+    return raiz;
+}
+
+// Función para realizar un recorrido in-order e imprimir los elementos
+void imprimirInOrder(Nodo* raiz) {
+    if (raiz == nullptr) {
+        return;
+    }
+    imprimirInOrder(raiz->izquierda);
+    std::cout << raiz->dato << " ";
+    imprimirInOrder(raiz->derecha);
+}
+
+int main() {
+    Nodo* raiz = nullptr;
+
+    raiz = insertar(raiz, 50);
+    raiz = insertar(raiz, 30);
+    raiz = insertar(raiz, 20);
+    raiz = insertar(raiz, 40);
+    raiz = insertar(raiz, 70);
+    raiz = insertar(raiz, 60);
+    raiz = insertar(raiz, 80);
+
+    std::cout << "Elementos del árbol en orden (in-order): ";
+    imprimirInOrder(raiz);
+    std::cout << std::endl;
+
+    return 0;
+}

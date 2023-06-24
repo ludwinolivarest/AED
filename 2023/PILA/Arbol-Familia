@@ -1,0 +1,152 @@
+#include <iostream>
+using namespace std;
+struct Nodo {
+    int dato;
+    Nodo* izquierda;
+    Nodo* derecha;
+};
+
+// Función para crear un nuevo nodo
+Nodo* crearNodo(int dato) {
+    Nodo* nodo = new Nodo();
+    nodo->dato = dato;
+    nodo->izquierda = nullptr;
+    nodo->derecha = nullptr;
+    return nodo;
+}
+
+// Función para insertar un elemento en el árbol
+Nodo* insertar(Nodo* raiz, int dato) {
+    if (raiz == nullptr) {
+        raiz = crearNodo(dato);
+    }
+    else if (dato <= raiz->dato) {
+        raiz->izquierda = insertar(raiz->izquierda, dato);
+    }
+    else {
+        raiz->derecha = insertar(raiz->derecha, dato);
+    }
+    return raiz;
+}
+
+// Función para realizar un recorrido in-order e imprimir los elementos
+void imprimirInOrder(Nodo* raiz) {
+    if (raiz == nullptr) {
+        return;
+    }
+    imprimirInOrder(raiz->izquierda);
+    cout << raiz->dato << " ";
+    imprimirInOrder(raiz->derecha);
+}
+void imprimirHijosDirectos(Nodo* raiz) {
+    if (raiz == nullptr) {
+        return;
+    }
+
+    if (raiz->izquierda != nullptr) {
+        cout << "Hijo izquierdo de " << raiz->dato << ": " << raiz->izquierda->dato << endl;
+    }
+    else {
+        cout << "Hijo izquierdo de " << raiz->dato << ": No tiene" << endl;
+    }
+
+    if (raiz->derecha != nullptr) {
+        cout << "Hijo derecho de " << raiz->dato << ": " << raiz->derecha->dato << endl;
+    }
+    else {
+        cout << "Hijo derecho de " << raiz->dato << ": No tiene" << endl;
+    }
+
+    imprimirHijosDirectos(raiz->izquierda);
+    imprimirHijosDirectos(raiz->derecha);
+}
+void imprimirHermanosArbol(Nodo* raiz) {
+    if (raiz == nullptr) {
+        return;
+    }
+
+    if (raiz->izquierda != nullptr && raiz->derecha != nullptr) {
+        cout << "Hermano de " << raiz->izquierda->dato << ": " << raiz->derecha->dato << endl;
+        cout << "Hermano de " << raiz->derecha->dato << ": " << raiz->izquierda->dato << endl;
+    }
+
+    imprimirHermanosArbol(raiz->izquierda);
+    imprimirHermanosArbol(raiz->derecha);
+}
+void obtenerTios(Nodo* raiz) {
+    if (raiz == nullptr || (raiz->izquierda == nullptr && raiz->derecha == nullptr)) {
+        return;
+    }
+
+    Nodo* abuelo = nullptr;
+    Nodo* padre = nullptr;
+    Nodo* actual = raiz;
+
+    while (actual != nullptr) {
+        if (actual->dato == raiz->dato) {
+            break;
+        }
+
+        if (actual->dato < raiz->dato) {
+            abuelo = padre;
+            padre = actual;
+            actual = actual->derecha;
+        }
+        else {
+            abuelo = padre;
+            padre = actual;
+            actual = actual->izquierda;
+        }
+    }
+
+    if (abuelo != nullptr) {
+        std::cout << "Tíos de " << raiz->dato << ": ";
+
+        if (abuelo->izquierda != nullptr && abuelo->izquierda->dato != padre->dato) {
+            std::cout << abuelo->izquierda->dato << " ";
+        }
+
+        if (abuelo->derecha != nullptr && abuelo->derecha->dato != padre->dato) {
+            std::cout << abuelo->derecha->dato << " ";
+        }
+
+        std::cout << std::endl;
+    }
+
+    obtenerTios(raiz->izquierda);
+    obtenerTios(raiz->derecha);
+}
+
+
+
+int main() {
+    Nodo* raiz = nullptr;
+
+    raiz = insertar(raiz, 8);
+    raiz = insertar(raiz, 3);
+    raiz = insertar(raiz, 1);
+    raiz = insertar(raiz, 5);
+    raiz = insertar(raiz, 10);
+    raiz = insertar(raiz, 9);
+    raiz = insertar(raiz, 11);
+    raiz = insertar(raiz, 12);
+
+    cout << "Primos:" << endl;
+    obtenerTios(raiz);
+    cout << endl;
+
+    cout << "Hermanos:" << endl;
+    imprimirHermanosArbol(raiz);
+    cout << endl;
+
+    cout << "Hijos:" << endl;
+    imprimirHijosDirectos(raiz);
+    cout << endl;
+
+
+    cout << "In-Order: ";
+    imprimirInOrder(raiz);
+    cout << endl;
+
+    
+}

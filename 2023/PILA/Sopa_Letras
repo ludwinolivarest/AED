@@ -1,0 +1,80 @@
+#include <iostream>
+#include <cstdlib>
+#include <time.h>
+
+using namespace std;
+
+struct NODO {
+    char l;
+    NODO* Next;
+    NODO(char a) { l = a; }
+};
+struct FILA {
+    NODO* Head=NULL;
+    NODO* P=NULL;
+    FILA* Next=NULL;
+    char letra = 'a';
+    FILA(int n) {
+        
+        for (int a = 0; a < n; a++)
+            
+            if (!Head) Head = new NODO(letra+rand()%26),P=Head;
+            else {
+               
+                P->Next = new NODO(letra + rand() % 26);
+                P = P->Next;
+                P->Next = NULL;
+            }
+    }
+    void imprimir(){
+        for (NODO* a = Head; a ; a = a->Next)cout << a->l<<'\t';
+        cout << endl;
+    }
+
+};
+
+struct MATRIZ
+{
+    FILA* Head = NULL;
+    FILA* P = NULL;
+    MATRIZ(int n,string pal) {
+        for (int a = 0; a < n; a++) {
+            if (!Head) Head = new FILA(n), P = Head;
+            else {
+                P->Next = new FILA(n);
+                P = P->Next;
+                P->Next = NULL;
+            }
+        }
+        FILA* rec = Head;
+        
+        for (int a = pal.size(); a > 0; a--) {
+            rec->Head->l = pal[a - 1];
+            rec = rec->Next;
+            
+        }
+    }
+
+    
+
+    void imprimir() {
+        for (FILA* a = Head; a; a = a->Next)a->imprimir();
+    }
+    
+   
+    
+   
+
+};
+
+
+
+int main() {
+    
+    
+
+    MATRIZ A(10, "dog");
+    A.imprimir();
+
+
+}

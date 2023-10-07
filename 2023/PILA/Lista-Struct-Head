@@ -1,0 +1,101 @@
+#include <iostream>
+
+using namespace std;
+
+struct Node
+{
+    int valor;
+    Node* Next = nullptr;
+    Node(int x) {
+        valor = x;
+    }
+
+};
+struct Lista
+{
+
+    Node* Top = nullptr;
+
+    Lista* Next = nullptr;
+    void insert(int x) {
+        if (!Top) Top = new Node(x);
+        else {
+            Node* p = Top;
+            while (p->Next) {
+                p = p->Next;
+            }
+            p->Next = new Node(x);
+
+        }
+    }
+    void elim() {
+        Node* p = Top;
+        Top = Top->Next;
+        delete p;
+    }
+    void imprimir() {
+        Node* p = Top;
+        while (p) {
+            cout << p->valor << "-";
+            p = p->Next;
+        }
+    }
+};
+struct ListaLista {
+    Lista* Head;
+
+    int tam = 0;
+    int cont = 0;
+    int conta = 0;
+    ListaLista(int x) {
+        Head = new Lista, tam = x;
+    }
+    void insert(int x) {
+        Lista* P = Head;
+        while (P->Next) {
+            P = P->Next;
+        }
+        if (cont == tam) {
+            P->Next = new Lista;
+            P = P->Next;
+        }
+
+        P->insert(x);
+        cont++;
+    }
+    void imprimir() {
+        Lista* p = Head;
+        while (p) {
+            p->imprimir();
+            cout << "->";
+            p = p->Next;
+        }
+        cout << endl;
+    }
+    void pop() {
+        if (conta == tam) {
+            Lista* p = Head;
+            Head = Head->Next;
+            delete p;
+        }
+        Head->elim();
+        conta++;
+
+    }
+};
+
+int main()
+{
+    ListaLista A(10);
+    for (int x = 0; x <= 19; x++)
+        A.insert(x);
+    A.imprimir();
+    A.pop();
+    A.pop();
+    A.imprimir();
+    for (int x = 0; x <= 14; x++)
+        A.insert(x);
+    A.imprimir();
+
+}
+

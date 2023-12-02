@@ -1,0 +1,248 @@
+#include <SFML/Graphics.hpp>
+#include <iostream>
+#include <queue>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+    int height;
+    Node(int value) : data(value), left(nullptr), right(nullptr), height(1) {}
+};
+class AVLTree {
+private:
+    Node* root;
+    Node* insertNode(Node* node, int value);
+    Node* deleteNode(Node* node, int value);
+    Node* minValueNode(Node* node);
+    int height(Node* node);
+    int balanceFactor(Node* node);
+    Node* rightRotate(Node* y);
+    Node* leftRotate(Node* x);
+    void inOrderTraversal(Node* node);
+
+public:
+    AVLTree() : root(nullptr) {}
+    void insert(int value);
+    void remove(int value);
+    void printInOrder();
+    Node* getRoot();
+    void drawTree(sf::RenderWindow& window, Node* node, float x, float y, float horizontalSpacing);
+};
+
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+int AVLTree::height(Node* node) {
+    if (node == nullptr)
+        return 0;
+    return node->height;
+}
+
+int AVLTree::balanceFactor(Node* node) {
+    if (node == nullptr)
+        return 0;
+    return height(node->left) - height(node->right);
+}
+
+Node* AVLTree::rightRotate(Node* y) {
+    Node* x = y->left;
+    Node* T2 = x->right;
+    x->right = y;
+    y->left = T2;
+    y->height = max(height(y->left), height(y->right)) + 1;
+    x->height = max(height(x->left), height(x->right)) + 1;
+    return x;
+}
+
+Node* AVLTree::leftRotate(Node* x) {
+    Node* y = x->right;
+    Node* T2 = y->left;
+    y->left = x;
+    x->right = T2;
+    x->height = max(height(x->left), height(x->right)) + 1;
+    y->height = max(height(y->left), height(y->right)) + 1;
+    return y;
+}
+
+Node* AVLTree::insertNode(Node* node, int value) {
+    if (node == nullptr)
+        return new Node(value);
+    if (value < node->data)
+        node->left = insertNode(node->left, value);
+    else if (value > node->data)
+        node->right = insertNode(node->right, value);
+    else
+        return node;
+    node->height = 1 + max(height(node->left), height(node->right));
+    int balance = balanceFactor(node);
+    if (balance > 1 && value < node->left->data)
+        return rightRotate(node);
+    if (balance < -1 && value > node->right->data)
+        return leftRotate(node);
+    if (balance > 1 && value > node->left->data) {
+        node->left = leftRotate(node->left);
+        return rightRotate(node);
+    }
+    if (balance < -1 && value < node->right->data) {
+        node->right = rightRotate(node->right);
+        return leftRotate(node);
+    }
+    return node;
+}
+
+void AVLTree::insert(int value) {
+    root = insertNode(root, value);
+}
+
+Node* AVLTree::minValueNode(Node* node) {
+    Node* current = node;
+    while (current && current->left != nullptr)
+        current = current->left;
+    return current;
+}
+
+Node* AVLTree::deleteNode(Node* node, int value) {
+    if (node == nullptr)
+        return node;
+
+    if (value < node->data)
+        node->left = deleteNode(node->left, value);
+    else if (value > node->data)
+        node->right = deleteNode(node->right, value);
+    else {
+        if (node->left == nullptr || node->right == nullptr) {
+            Node* temp = node->left ? node->left : node->right;
+
+            if (temp == nullptr) {
+                temp = node;
+                node = nullptr;
+            }
+            else
+                *node = *temp;
+
+            delete temp;
+        }
+        else {
+            Node* temp = minValueNode(node->right);
+            node->data = temp->data;
+            node->right = deleteNode(node->right, temp->data);
+        }
+    }
+    if (node == nullptr)
+        return node;
+    node->height = 1 + max(height(node->left), height(node->right));
+    int balance = balanceFactor(node);
+    if (balance > 1 && balanceFactor(node->left) >= 0)
+        return rightRotate(node);
+    if (balance > 1 && balanceFactor(node->left) < 0) {
+        node->left = leftRotate(node->left);
+        return rightRotate(node);
+    }
+    if (balance < -1 && balanceFactor(node->right) <= 0)
+        return leftRotate(node);
+    if (balance < -1 && balanceFactor(node->right) > 0) {
+        node->right = rightRotate(node->right);
+        return leftRotate(node);
+    }
+    return node;
+}
+
+void AVLTree::remove(int value) {
+    root = deleteNode(root, value);
+}
+
+void AVLTree::inOrderTraversal(Node* node) {
+    if (node == nullptr)
+        return;
+    inOrderTraversal(node->left);
+    cout << node->data << " ";
+    inOrderTraversal(node->right);
+}
+
+void AVLTree::printInOrder() {
+    cout << "Nodos en método in-order: ";
+    inOrderTraversal(root);
+    cout << endl;
+}
+
+Node* AVLTree::getRoot() {
+    return root;
+}
+
+void AVLTree::drawTree(sf::RenderWindow& window, Node* node, float x, float y, float horizontalSpacing) {
+    if (node == nullptr)
+        return;
+    sf::CircleShape circle(25);
+    circle.setFillColor(sf::Color::White);
+    circle.setOutlineThickness(2);
+    circle.setOutlineColor(sf::Color::Black);
+    circle.setPosition(x, y);
+    window.draw(circle);
+    sf::Font font;
+    font.loadFromFile("C:\\Windows\\Fonts\\arial.ttf");
+    sf::Text text(to_string(node->data), font, 20);
+    text.setFillColor(sf::Color::Black);
+    text.setPosition(x + 12, y + 8);
+    window.draw(text);
+    if (node->left) {
+        sf::Vertex line[] = {
+            sf::Vertex(sf::Vector2f(x + 25.f, y + 25.f)),
+            sf::Vertex(sf::Vector2f(x - horizontalSpacing + 25.f, y + 75.f))
+        };
+        window.draw(line, 2, sf::Lines);
+        drawTree(window, node->left, x - horizontalSpacing, y + 50, horizontalSpacing / 2);
+    }
+    if (node->right) {
+        sf::Vertex line[] = {
+            sf::Vertex(sf::Vector2f(x + 25.f, y + 25.f)),
+            sf::Vertex(sf::Vector2f(x + horizontalSpacing + 25.f, y + 75.f))
+        };
+        window.draw(line, 2, sf::Lines);
+        drawTree(window, node->right, x + horizontalSpacing, y + 50, horizontalSpacing / 2);
+    }
+}
+
+int main() {
+    AVLTree tree;
+
+    int choice, value;
+    cout << "Ingrese '1' para insertar un nodo, '2' para eliminar, '0' para salir: ";
+    cin >> choice;
+    sf::RenderWindow window(sf::VideoMode(800, 600), "AVL Tree");
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        window.clear(sf::Color::Red);
+
+        switch (choice) {
+        case 1:
+            cout << "Ingrese el valor del nodo a insertar: ";
+            cin >> value;
+            tree.insert(value);
+            break;
+        case 2:
+            cout << "Ingrese el valor del nodo a eliminar: ";
+            cin >> value;
+            tree.remove(value);
+            break;
+        case 0:
+            window.close();
+            break;
+        default:
+            cout << "Opcion invalida.\n";
+        }
+        tree.drawTree(window, tree.getRoot(), 400.f, 50.f, 200.f);
+        window.display();
+        cout << "Ingrese '1' para insertar, '2' para eliminar, '0' para salir: ";
+        cin >> choice;
+    }
+
+    return 0;
+}

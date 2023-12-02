@@ -1,0 +1,352 @@
+#include <iostream>
+#include <SFML/Graphics.hpp>
+using namespace std;
+
+enum Color { RED, BLACK };
+
+struct Node {
+    int data;
+    Color color;
+    Node* left, * right, * parent;
+
+    Node(int data) : data(data), color(RED), left(nullptr), right(nullptr), parent(nullptr) {}
+};
+
+class RedBlackTree {
+private:
+    Node* root;
+    sf::RenderWindow window;
+    sf::Font font;
+    void leftRotate(Node* x);
+    void rightRotate(Node* y);
+    void insertFixup(Node* z);
+    void transplant(Node* u, Node* v);
+    void deleteNode(Node* z);
+    void deleteFixup(Node* x);
+    void drawTree(sf::RenderWindow& window, RedBlackTree& tree);
+    void drawNode(sf::RenderWindow& window, Node* node, float x, float y, float offsetX, float offsetY, int level);
+    void inOrderTraversal(Node* node);
+
+public:
+    RedBlackTree() : root(nullptr) {
+        window.create(sf::VideoMode(800, 600), "Red-Black Tree Visualization");
+        if (!font.loadFromFile("C:\\Windows\\Fonts\\arial.ttf")) {
+            cerr << "Error al cargar la fuente." << endl;
+        }
+    }
+    Node* getRoot();
+    void insert(int data);
+    void remove(int data);
+    void printInOrder();
+    void visualize();
+};
+
+void RedBlackTree::leftRotate(Node* x) {
+    Node* y = x->right;
+    x->right = y->left;
+    if (y->left != nullptr) y->left->parent = x;
+    y->parent = x->parent;
+    if (x->parent == nullptr) root = y;
+    else if (x == x->parent->left) x->parent->left = y;
+    else x->parent->right = y;
+    y->left = x;
+    x->parent = y;
+}
+
+void RedBlackTree::rightRotate(Node* y) {
+    Node* x = y->left;
+    y->left = x->right;
+    if (x->right != nullptr) x->right->parent = y;
+    x->parent = y->parent;
+    if (y->parent == nullptr) root = x;
+    else if (y == y->parent->right) y->parent->right = x;
+    else y->parent->left = x;
+    x->right = y;
+    y->parent = x;
+}
+
+void RedBlackTree::insertFixup(Node* z) {
+    while (z->parent != nullptr && z->parent->color == RED) {
+        if (z->parent == z->parent->parent->left) {
+            Node* y = z->parent->parent->right;
+            if (y != nullptr && y->color == RED) {
+                z->parent->color = BLACK;
+                y->color = BLACK;
+                z->parent->parent->color = RED;
+                z = z->parent->parent;
+            }
+            else {
+                if (z == z->parent->right) {
+                    z = z->parent;
+                    leftRotate(z);
+                }
+                z->parent->color = BLACK;
+                z->parent->parent->color = RED;
+                rightRotate(z->parent->parent);
+            }
+        }
+        else {
+            Node* y = z->parent->parent->left;
+            if (y != nullptr && y->color == RED) {
+                z->parent->color = BLACK;
+                y->color = BLACK;
+                z->parent->parent->color = RED;
+                z = z->parent->parent;
+            }
+            else {
+                if (z == z->parent->left) {
+                    z = z->parent;
+                    rightRotate(z);
+                }
+                z->parent->color = BLACK;
+                z->parent->parent->color = RED;
+                leftRotate(z->parent->parent);
+            }
+        }
+    }
+    root->color = BLACK;
+}
+
+void RedBlackTree::transplant(Node* u, Node* v) {
+    if (u->parent == nullptr) root = v;
+    else if (u == u->parent->left) u->parent->left = v;
+    else u->parent->right = v;
+    if (v != nullptr) v->parent = u->parent;
+}
+
+void RedBlackTree::deleteNode(Node* z) {
+    Node* y = z;
+    Node* x;
+    Color yOriginalColor = y->color;
+    if (z->left == nullptr) {
+        x = z->right;
+        transplant(z, z->right);
+    }
+    else if (z->right == nullptr) {
+        x = z->left;
+        transplant(z, z->left);
+    }
+    else {
+        y = z->right;
+        while (y->left != nullptr) y = y->left;
+        yOriginalColor = y->color;
+        x = y->right;
+        if (y->parent == z) x->parent = y;
+        else {
+            transplant(y, y->right);
+            y->right = z->right;
+            y->right->parent = y;
+        }
+        transplant(z, y);
+        y->left = z->left;
+        y->left->parent = y;
+        y->color = z->color;
+    }
+    if (yOriginalColor == BLACK) deleteFixup(x);
+}
+
+void RedBlackTree::deleteFixup(Node* x) {
+    while (x != root && x->color == BLACK) {
+        if (x == x->parent->left) {
+            Node* w = x->parent->right;
+            if (w->color == RED) {
+                w->color = BLACK;
+                x->parent->color = RED;
+                leftRotate(x->parent);
+                w = x->parent->right;
+            }
+            if (w->left->color == BLACK && w->right->color == BLACK) {
+                w->color = RED;
+                x = x->parent;
+            }
+            else {
+                if (w->right->color == BLACK) {
+                    w->left->color = BLACK;
+                    w->color = RED;
+                    rightRotate(w);
+                    w = x->parent->right;
+                }
+                w->color = x->parent->color;
+                x->parent->color = BLACK;
+                w->right->color = BLACK;
+                leftRotate(x->parent);
+                x = root;
+            }
+        }
+        else {
+            Node* w = x->parent->left;
+            if (w->color == RED) {
+                w->color = BLACK;
+                x->parent->color = RED;
+                rightRotate(x->parent);
+                w = x->parent->left;
+            }
+            if (w->right->color == BLACK && w->left->color == BLACK) {
+                w->color = RED;
+                x = x->parent;
+            }
+            else {
+                if (w->left->color == BLACK) {
+                    w->right->color = BLACK;
+                    w->color = RED;
+                    leftRotate(w);
+                    w = x->parent->left;
+                }
+                w->color = x->parent->color;
+                x->parent->color = BLACK;
+                w->left->color = BLACK;
+                rightRotate(x->parent);
+                x = root;
+            }
+        }
+    }
+    x->color = BLACK;
+}
+
+void RedBlackTree::insert(int data) {
+    Node* newNode = new Node(data);
+    Node* y = nullptr;
+    Node* x = root;
+
+    while (x != nullptr) {
+        y = x;
+        if (newNode->data < x->data)
+            x = x->left;
+        else
+            x = x->right;
+    }
+
+    newNode->parent = y;
+
+    if (y == nullptr)
+        root = newNode;
+    else if (newNode->data < y->data)
+        y->left = newNode;
+    else
+        y->right = newNode;
+
+    insertFixup(newNode);
+    drawTree(window, *this);
+}
+
+void RedBlackTree::remove(int data) {
+    Node* z = root;
+    while (z != nullptr) {
+        if (data < z->data)
+            z = z->left;
+        else if (data > z->data)
+            z = z->right;
+        else {
+            deleteNode(z);
+            drawTree(window, *this); // Actualizar el gráfico después de eliminar
+            return;
+        }
+    }
+    cout << "El nodo con valor " << data << " no se encuentra en el árbol." << endl;
+    deleteNode(z);
+    drawTree(window, *this);
+}
+
+void RedBlackTree::printInOrder() {
+    inOrderTraversal(root);
+    cout << endl;
+}
+
+Node* RedBlackTree::getRoot() {
+    return root;
+}
+
+void RedBlackTree::visualize() {
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) window.close();
+        }
+        window.clear(sf::Color::Black);
+        drawNode(window, root, 400, 40, 0, 0, 0);
+        window.display();
+    }
+}
+
+void RedBlackTree::drawTree(sf::RenderWindow& window, RedBlackTree& tree) {
+    window.clear(sf::Color::White);
+    if (tree.getRoot() != nullptr) {
+        drawNode(window, tree.getRoot(), window.getSize().x / 2, 50, 0, 0, 1);
+    }
+    window.display();
+}
+
+void RedBlackTree::drawNode(sf::RenderWindow& window, Node* node, float x, float y, float offsetX, float offsetY, int level) {
+    if (node == nullptr) return;
+
+    sf::Color nodeColor = (node->color == RED) ? sf::Color::Red : sf::Color::Black;
+    sf::Color outlineColor = (node->color == RED) ? sf::Color::Black : sf::Color::White;
+
+    sf::CircleShape circle(20);
+    circle.setPosition(x, y);
+    circle.setFillColor(nodeColor);
+    circle.setOutlineThickness(2);
+    circle.setOutlineColor(outlineColor);
+    window.draw(circle);
+
+    sf::Text text(to_string(node->data), font, 20);
+    text.setPosition(x + 8, y + 5);
+    text.setFillColor(sf::Color::White);
+    window.draw(text);
+
+    if (node->left != nullptr) {
+        sf::Vertex line[] = {
+            sf::Vertex(sf::Vector2f(x + 20, y + 20), nodeColor),
+            sf::Vertex(sf::Vector2f(x - 100 / (level + 1) + 20, y + 100), nodeColor),
+        };
+        window.draw(line, 2, sf::Lines);
+        drawNode(window, node->left, x - 100 / (level + 1), y + 100, offsetX - 20, offsetY + 100, level + 1);
+    }
+    if (node->right != nullptr) {
+        sf::Vertex line[] = {
+            sf::Vertex(sf::Vector2f(x + 20, y + 20), nodeColor),
+            sf::Vertex(sf::Vector2f(x + 100 / (level + 1) + 20, y + 100), nodeColor),
+        };
+        window.draw(line, 2, sf::Lines);
+        drawNode(window, node->right, x + 100 / (level + 1), y + 100, offsetX + 20, offsetY + 100, level + 1);
+    }
+}
+
+void RedBlackTree::inOrderTraversal(Node* node) {
+    if (node == nullptr) return;
+    inOrderTraversal(node->left);
+    cout << node->data << " ";
+    inOrderTraversal(node->right);
+}
+
+int main() {
+    RedBlackTree tree;
+
+    int choice, value;
+    cout << "Ingrese '1' para insertar un nodo, '2' para eliminar, '3' para imprimir in-order, '0' para salir: ";
+    cin >> choice;
+
+    while (choice != 0) {
+        switch (choice) {
+        case 1:
+            cout << "Ingrese el valor del nodo a insertar: ";
+            cin >> value;
+            tree.insert(value);
+            break;
+        case 2:
+            cout << "Ingrese el valor del nodo a eliminar: ";
+            cin >> value;
+            tree.remove(value);
+            break;
+        case 3:
+            tree.printInOrder();
+            break;
+        default:
+            cout << "Opción inválida.\n";
+        }
+        cout << "Ingrese '1' para insertar, '2' para eliminar, '3' para imprimir in-order, '0' para salir: ";
+        cin >> choice;
+    }
+
+    return 0;
+}

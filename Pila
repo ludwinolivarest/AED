@@ -1,61 +1,74 @@
-include <iostream>
+#include <iostream>
 using namespace std;
+
 class PilaMyClass
 {
 public:
-	void push(int x) {
-		if (!top) {
-			top = A;
-			*top = x;
-		}
-		else {
-			if (top < f) {
-				top++;
-				*top = x;
-			}
-			else {
-				cout << "llena"<<endl;
-			}
-		}
-	
-	}
-	int pop() {
-		int tmp = 0;
-		if (top) {
-			tmp = *top;
-			top--;
-		}
-		else {
-			cout << "vacia" << endl;
-		}
-		return tmp;
-	}
+    void push(int x) {
+        if (!top) {
+            top = A;
+            *top = x;
+        }
+        else {
+            if (top < f) {
+                top++;
+                *top = x;
+            }
+            else {
+                cout << "llena" << endl;
+            }
+        }
+    }
+
+    int pop() {
+        int tmp = 0;
+        if (top) {
+            tmp = *top;
+            top--;
+        }
+        else {
+            cout << "vacia" << endl;
+        }
+        return tmp;
+    }
+
+    void imprimir() {
+        if (!top) {
+            cout << "La pila está vacía." << endl;
+            return;
+        }
+        int* ptr = top;
+        while (ptr >= I) {
+            cout << *ptr << " ";
+            ptr--;
+        }
+        cout << endl;
+    }
 
 private:
-	int A[9];
-	int* I = A, * f = A + 9, *top = NULL;
-
+    int A[9];
+    int* I = A, * f = A + 9, * top = NULL;
 };
-
-
-
-
 
 int main()
 {
-	PilaMyClass P;
-	P.push(2);
-	P.push(3);
-	P.push(4);
-	P.push(5);
-	P.push(6);
-	P.push(7);
-	P.push(8);
-	P.push(9);
-	P.push(10);
-	P.push(10);
-	P.push(10);
-	P.push(10);
-	P.push(10);
+    PilaMyClass P;
+    P.push(2);
+    P.push(3);
+    P.push(4);
+    P.push(5);
+    P.push(6);
+    P.push(7);
+    P.push(8);
+    P.push(9);
+    
+    P.push(10);
+    P.push(11);
+    P.push(10);
+    P.push(10);
+    P.push(10);
 
+    P.imprimir();
+
+    return 0;
 }

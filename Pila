@@ -1,100 +1,34 @@
-#include <iostream>
+/**/#include <iostream>
 using namespace std;
-class PilaMyClass
-{
-public:
-	void push(int x) {
-		if (!top) {
-			top = A;
-			*top = x;
-		}
-		else {
-			if (top < f) {
-				top++;
-				*top = x;
-			}
-			else {
-				cout << "llena"<<endl;
-			}
-		}
-	
-	}
-	int pop() {
-		int tmp = 0;
-		if (top) {
-			tmp = *top;
-			top--;
-		}
-		else {
-			cout << "vacia" << endl;
-		}
-		return tmp;
-	}
-	
-
-private:
-	int A[9];
-	int* I = A, * f = A + 9, *top = NULL;
-
-};
-
-class Pilita
-{
-public:
-	void ins(int x) {
-		if (!top) {
-			top = A;
-			*top = x;
-			tale = top;
-		}
-		else {
-			if(tale>top){
-			if (tale < F) {
-				tale++;
-				*tale = x;
-			}
-			else {
-				if(tale!=top){
-					*tale = x;
-				}
-				else
-				{
-					cout << "full" << endl;
-				}
-				
-			}
-			}
-
-			
-		}
-		
-
-	}
-
-void del(int x) {
-
+bool binbus(int* ini, int* fin, int* kpos, int valor) {
+    int* izquierda = ini;
+    int* derecha = fin - 1;
+    while (izquierda <= derecha) {
+        int* medio = izquierda + (derecha - izquierda) / 2;
+        if (*medio == valor) {*kpos = medio - ini; return true;
+        }
+        else if (*medio < valor) {izquierda = medio + 1;
+        }
+        else {derecha = medio - 1;
+        }
+    }
+    *kpos = izquierda - ini;
+    return false;
 }
-void imprimir() {
-	for (int x = 0; x < 10; x++) {
-		cout << A[x];
-	}
-	cout << endl;
+int main() {
+    const int tam = 10;
+    int arreglo[tam] = { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 };
+    int valor;
+
+   cout << "Ingrese el valor a buscar: ";
+    cin >> valor;
+
+    int kpos;
+    if (binbus(arreglo, arreglo + tam, &kpos, valor)) {
+        cout <<valor << " esta en la pos " << kpos << endl;
+    }
+    else {
+        cout << "No se encontro";
+    }
+    return 0;
 }
-private:
-	int A[9];
-	int* F = A + 9, * top = NULL, * tale = NULL;
-};
-
-
-
-
-int main()
-{
-	Pilita P;
-	for (int i = 1; i < 13; i++) {
-		P.ins(i);
-		P.imprimir();
-	}
-
-}
-

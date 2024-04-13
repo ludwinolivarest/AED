@@ -1,34 +1,61 @@
-/**/#include <iostream>
+include <iostream>
 using namespace std;
-bool binbus(int* ini, int* fin, int* kpos, int valor) {
-    int* izquierda = ini;
-    int* derecha = fin - 1;
-    while (izquierda <= derecha) {
-        int* medio = izquierda + (derecha - izquierda) / 2;
-        if (*medio == valor) {*kpos = medio - ini; return true;
-        }
-        else if (*medio < valor) {izquierda = medio + 1;
-        }
-        else {derecha = medio - 1;
-        }
-    }
-    *kpos = izquierda - ini;
-    return false;
-}
-int main() {
-    const int tam = 10;
-    int arreglo[tam] = { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 };
-    int valor;
+class PilaMyClass
+{
+public:
+	void push(int x) {
+		if (!top) {
+			top = A;
+			*top = x;
+		}
+		else {
+			if (top < f) {
+				top++;
+				*top = x;
+			}
+			else {
+				cout << "llena"<<endl;
+			}
+		}
+	
+	}
+	int pop() {
+		int tmp = 0;
+		if (top) {
+			tmp = *top;
+			top--;
+		}
+		else {
+			cout << "vacia" << endl;
+		}
+		return tmp;
+	}
 
-   cout << "Ingrese el valor a buscar: ";
-    cin >> valor;
+private:
+	int A[9];
+	int* I = A, * f = A + 9, *top = NULL;
 
-    int kpos;
-    if (binbus(arreglo, arreglo + tam, &kpos, valor)) {
-        cout <<valor << " esta en la pos " << kpos << endl;
-    }
-    else {
-        cout << "No se encontro";
-    }
-    return 0;
+};
+
+
+
+
+
+int main()
+{
+	PilaMyClass P;
+	P.push(2);
+	P.push(3);
+	P.push(4);
+	P.push(5);
+	P.push(6);
+	P.push(7);
+	P.push(8);
+	P.push(9);
+	P.push(10);
+	P.push(10);
+	P.push(10);
+	P.push(10);
+	P.push(10);
+
 }

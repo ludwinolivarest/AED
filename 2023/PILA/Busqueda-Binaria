@@ -1,0 +1,42 @@
+#include <iostream>
+bool binbus(int* ini, int* fin, int* kpos, int valor) {
+    int* izquierda = ini;
+    int* derecha = fin - 1;
+
+    while (izquierda <= derecha) {
+        int* medio = izquierda + (derecha - izquierda) / 2;
+        if (*medio == valor) {
+            *kpos = medio - ini;
+            return true;
+        }
+        else if (*medio < valor) {
+            izquierda = medio + 1;
+        }
+        else {
+            derecha = medio - 1;
+        }
+    }
+
+
+    *kpos = izquierda - ini;
+    return false;
+}
+
+int main() {
+    const int tamano = 10;
+    int arreglo[tamano] = { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 };
+    int valor;
+
+    std::cout << "Ingrese el valor a buscar: ";
+    std::cin >> valor;
+
+    int kpos;
+    if (binbus(arreglo, arreglo + tamano, &kpos, valor)) {
+        std::cout << "El valor " << valor << " se encontro en la posicion " << kpos << std::endl;
+    }
+    else {
+        std::cout << "El valor " << valor << " no se encontro, deberia estar en la posicion " << kpos << std::endl;
+    }
+
+    return 0;
+}

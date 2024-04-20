@@ -1,0 +1,59 @@
+
+#include <iostream>
+
+using namespace std;
+struct Node {
+    int a[5] = { 0,0,0,0,0 };
+    Node* Next = nullptr;
+};
+
+struct Elementor {
+    Node* Top = NULL;
+    void insert(int val) {
+
+        if (!Top) { Top = new Node; Top->a[0] = val; }
+        else {
+            Node* p = Top;
+            int cont = 0;
+            while (p->a[cont] < val and p->a[cont] != 0 and cont <5) { cont++; if (cont == 5 and p->Next) {p = p->Next; cont = 0; } else if (!p->Next and cont == 5) { p->Next = new Node; cont = 0; p = p->Next; } }
+            int temp = val;
+            swap(p->a[cont], temp);
+            cont++;
+            while (cont < 5 and temp != 0) { swap(p->a[cont], temp); cont++; if (cont == 5 and p->Next) { cont = 0; p = p->Next; } else if (!p->Next and cont ==5)p->Next = new Node; cont = 0; p = p->Next; }
+        }
+    }
+    void eliminar(int val) {
+        if (!Top) { cout << "Vacia"; }
+        else {
+            Node* p = Top;
+            int cont = 0;
+            while (p->a[cont] != val and p->a[cont] != 0 and cont < 5) { cont++; if (cont == 5 and p->Next) { p = p->Next; cont = 0; } else if (!p->Next and cont == 5) { cout << "No esta"; } }
+            p->a[cont] = 0;
+            while (cont < 5) { }
+
+
+        }
+
+    }
+
+    void imprimir() {
+        Node* p = Top;
+        for (int c = 0; c < 5; c++) {
+            cout << p->a[c] << " ";
+            if (c == 4 and p->Next) { c = -1; p = p->Next; cout << "->"; }
+        }
+    }
+};
+
+
+int main()
+{
+    Elementor a;
+    for (int x = 1; x < 14; x++) { a.insert(x); }
+    a.insert(18);
+    a.insert(17);
+    
+    a.imprimir();
+
+}
+

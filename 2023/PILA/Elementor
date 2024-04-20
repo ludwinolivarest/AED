@@ -28,8 +28,8 @@ struct Elementor {
             Node* p = Top;
             int cont = 0;
             while (p->a[cont] != val and p->a[cont] != 0 and cont < 5) { cont++; if (cont == 5 and p->Next) { p = p->Next; cont = 0; } else if (!p->Next and cont == 5) { cout << "No esta"; } }
-            p->a[cont] = 0;
-            while (cont < 5) { }
+            
+            while (cont < 5) { if (p->a[cont] == 0) { p = nullptr; } if (cont < 4) { swap(p->a[cont], p->a[cont + 1]); }cont++; if (p->Next and cont == 5) { swap(p->a[cont], p->Next->a[0]); p = p->Next; } }
 
 
         }
@@ -42,6 +42,7 @@ struct Elementor {
             cout << p->a[c] << " ";
             if (c == 4 and p->Next) { c = -1; p = p->Next; cout << "->"; }
         }
+
     }
 };
 
@@ -49,10 +50,10 @@ struct Elementor {
 int main()
 {
     Elementor a;
-    for (int x = 1; x < 14; x++) { a.insert(x); }
+    for (int x = 1; x < 12; x++) { a.insert(x); }
     a.insert(18);
     a.insert(17);
-    
+    a.eliminar(17);
     a.imprimir();
 
 }
